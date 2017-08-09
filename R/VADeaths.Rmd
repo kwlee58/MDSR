@@ -1,0 +1,82 @@
+---
+title: "VADeaths"
+author: "coop711"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Tidy Data
+
+쉽게 tidy를 만드는 방법에 대하여 알아본다. 사용되는 되는 데인터는 R에 내장되어 있는 `VADeaths` 이다.
+
+```{r VADeaths}
+VADeaths
+```
+
+## 평범한 방법
+
+왜 이 데이터가 tidy하다고 하지 않는지 생각해 보자.
+
+```{r, r base}
+str(VADeaths)
+Rates <- c(VADeaths)
+N <- length(Rates)
+Age <- ordered(rownames(VADeaths))
+Age <- rep(ordered(rownames(VADeaths)), length.out = N)
+Site <- gl(2, 10, N, 
+           labels = c("Rural", "Urban"))
+Gender <- gl(2, 5, N, 
+             labels = c("Male", "Female"))
+data.frame(Age, Site, Gender, Rates)
+VADeaths.df <- data.frame(Age, Site, Gender, Rates)
+VADeaths.df
+str(VADeaths.df)
+```
+
+## tidyverse를 이용한 방법 
+
+라인 바이 라인 어떤 흐름이 잡히는 지 살펴보시오.
+
+```{r, tidyverse}
+library(tidyverse)
+VADeaths.tbl <- VADeaths %>%
+  as_tibble() %>%
+  mutate(Age = row.names(VADeaths)) %>%
+  gather(key = Site_Gender, 
+         value = Rates, -Age) %>%
+  separate(Site_Gender, c("Site", "Gender"), 
+           sep = " ") %>%
+  mutate(Age = ordered(Age), 
+         Site = factor(Site), 
+         Gender = factor(Gender, 
+                         levels = c("Male", "Female")))
+VADeaths.tbl
+str(VADeaths.tbl)
+```
+
+## Plots
+
+You can also embed plots, for example:
+
+```{r geom_bar}
+library(ggplot2)
+ggplot(data = VADeaths.df,
+              mapping = aes(x = interaction(Site, Gender), y = Rates, fill = Age)) +
+geom_bar(stat = "identity", position = position_dodge())
+```
+
+`VADeaths.tbl`로 그리면, 
+
+```{r geom_bar2}
+library(ggplot2)
+ggplot(data = VADeaths.tbl,
+              mapping = aes(x = interaction(Site, Gender), 
+                            y = Rates, 
+                            fill = Age)) +
+geom_bar(stat = "identity", 
+         position = position_dodge())
+```
+
