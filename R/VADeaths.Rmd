@@ -154,7 +154,7 @@ geom_bar(stat = "identity",
          position = position_dodge())
 ```
 
-막대의 색깔을 조정하면, 
+막대의 색깔을 Sequential 팔렛뜨 계열(`scale_fill_brewer` 도움말 참조)의 색깔 중 연령대의 변화에 맞도록 조정하면, 
 
 ```{r ColorBrewer}
 ggplot(data = VADeaths.tbl,
@@ -164,5 +164,4 @@ ggplot(data = VADeaths.tbl,
 geom_bar(stat = "identity", 
          position = position_dodge()) +
 scale_fill_brewer(palette = "YlOrRd", direction = -1)
-
 ```
