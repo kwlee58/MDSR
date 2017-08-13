@@ -17,7 +17,7 @@ VADeaths
 str(VADeaths)
 ```
 
-## `R Base` 의 도구 활용 
+## `Base R` 의 도구 활용 
 
 왜 이 데이터가 깔끔하지(tidy) 않는지 생각해 보자. 데이터를 어떻게 표현해야 깔끔한 것인지 최종 결과물과 비교한다. 
 
@@ -39,6 +39,19 @@ data.frame(Age, Place, Gender, Rates) # 각 벡터를 데이터 프레임의 요
 VADeaths.df <- data.frame(Age, Place, Gender, Rates) # 데이터 프레임을 새로운 R 객체로 지정 
 VADeaths.df # 데이터 프레임 출력 
 str(VADeaths.df) # 데이터 프레임 구조 파악
+```
+
+`VADeaths`를 `table`구조로 변환하고, `as.data.frame`을 적용할 수도 있으나 `Place`와 `Gender`를 다시 분리하여야 함.
+
+```{r, as.data.frame and as.table}
+as.data.frame(as.table(VADeaths))
+```
+
+혹은 한 번에
+
+
+```{r, as.data.frame.table}
+as.data.frame.table(VADeaths)
 ```
 
 ## tidyverse를 이용한 방법 
@@ -163,5 +176,18 @@ ggplot(data = VADeaths.tbl,
                             fill = Age)) +
 geom_bar(stat = "identity", 
          position = position_dodge()) +
+scale_fill_brewer(palette = "YlOrRd", direction = -1)
+```
+
+`facet_grid`를 이용하여 패널로 구분하여 나타내면, 
+
+```{r facet}
+ggplot(data = VADeaths.tbl,
+              mapping = aes(x = "", 
+                            y = Rates, 
+                            fill = Age)) +
+geom_bar(stat = "identity", 
+         position = position_dodge()) + 
+facet_grid(Gender ~ Place) +
 scale_fill_brewer(palette = "YlOrRd", direction = -1)
 ```
