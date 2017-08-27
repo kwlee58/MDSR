@@ -42,13 +42,65 @@ ggplot(data = votes.df,
   geom_polygon(colour = "black") +
   theme_void() +
     scale_fill_viridis(name = "Republican\nvotes (%)")
+
+## USArrests
+
+str(USArrests)
+crimes <- data.frame(state = tolower(rownames(USArrests)), #% US_map의 region에 맞춤.
+                     USArrests, 
+                     stringsAsFactors = FALSE, #% 꼭 필요한 설정임.
+                     row.names = NULL)
+str(crimes) #%
+crime_map <-merge(us_map, 
+                  crimes, 
+                  by.x = "region", 
+                  by.y = "state")
+str(crime_map) # order changed!
+head(crime_map)
+tail(crime_map)
+crime_map <- arrange(crime_map, group, order)
+str(crime_map)
+#% Alternatively, 
+crime_map <- crimes %>%
+  as_tibble() %>%
+  mutate(state = rownames(USArrests), 
+         state = tolower(state)) %>% 
+  right_join(us_map, by = c("state" = "region")) 
+str(crime_map)
+head(crime_map)
+tail(crime_map)
+ggplot(data = crime_map, 
+       mapping = aes(x = long,
+                     y = lat,
+                     group = group,
+                     fill = Assault)) +
+  geom_polygon(colour = "black") +
+  coord_map("polyconic")
+
+### scale_fill_gradient
+
+ggplot(data = crimes,
+       mapping = aes(map_id = state, 
+                     fill = Assault)) +
+  geom_map(map = states_map,
+           colour = "black") +
+  scale_fill_gradient2(low = "#559999",
+                       mid = "grey99",
+                       high = "#BB650B",
+                       midpoint = median(crimes$Assault)) +
+  expand_limits(x = states_map$long,
+                y = states_map$lat) +
+  coord_map("polyconic")
+
 ## ggmap
 # library(devtools)
 # install_github("dkahle/ggmap") # ggplot 2.2.0 needed. panel.margin vs panel.spacing
 # install.packages(c("RgoogleMaps", "png", "jpeg"))
 # sudo yum install libjpeg-turbo-devel libpng-devel
+
 library(ggmap) # RgoogleMaps, jpeg, png needed. libjpeg-turbo-devel, libpng-devel 
-beijing <- get_map("Beijing", zoom = 12)
+beijing <- get_map("Beijing", 
+                   zoom = 12)
 ggmap(beijing) +
   theme_void() +
   labs(title = "Beijing, China")
@@ -72,10 +124,10 @@ map_3 <- get_map("Estes Park",
                  maptype = "hybrid",
                  source = "google") %>%
   ggmap(extent = "device")
-# library(gridExtra)
+library(gridExtra)
 grid.arrange(map_1, map_2, map_3, nrow = 1)
 
-## Serial Data
+## Maryland Serial Data
 
 serial <- read_csv(paste0("https://raw.githubusercontent.com/",
                           "dgrtwo/serial-ggvis/master/input_data/",
@@ -113,46 +165,6 @@ g0 <- ggplot(baltimore,
     scale_colour_manual(name = "Cell Tower", 
                         values = c("black", "red")))
 
-
-## Chuncheon 
-
-library(OpenStreetMap)
-
-get_map("Chuncheon", 
-#       zoom = 12, 
-#       maptype = "terrain",
-        source = "google") %>%
-  ggmap()
-get_map("Chuncheon", 
-#       zoom = 12, 
-        maptype = "satellite",
-        source = "google") %>%
-  ggmap()
-get_map("Chuncheon", 
-#       zoom = 12, 
-        maptype = "roadmap",
-        source = "google") %>%
-  ggmap()
-get_map("Chuncheon", 
-#       zoom = 12, 
-        maptype = "hybrid",
-        source = "google") %>%
-  ggmap()
-get_map("Chuncheon", 
-        maptype = "watercolor",
-        source = "stamen") %>%
-  ggmap()
-get_map("Chuncheon", 
-        maptype = "toner",
-#       zoom = 12,
-        source = "stamen") %>%
-  ggmap()
-get_map("Baltimore",  ## Error
-        source = "osm") %>%
-  ggmap()
-cc.geocode <- geocode("Chuncheon")
-geocode("춘천시 근화길15번길 26")
-
 ## Baltimore + Serial
 
 (map_base <- get_map("Baltimore County",
@@ -176,3 +188,42 @@ geocode("춘천시 근화길15번길 26")
     theme_void() +
     scale_colour_manual(name = "Cell Tower", 
                         values = c("black", "red")))
+
+## Chuncheon 
+
+library(OpenStreetMap)
+
+get_map("Chuncheon", 
+        #       zoom = 12, 
+        #       maptype = "terrain",
+        source = "google") %>%
+  ggmap()
+get_map("Chuncheon", 
+        #       zoom = 12, 
+        maptype = "satellite",
+        source = "google") %>%
+  ggmap()
+get_map("Chuncheon", 
+        #       zoom = 12, 
+        maptype = "roadmap",
+        source = "google") %>%
+  ggmap()
+get_map("Chuncheon", 
+        #       zoom = 12, 
+        maptype = "hybrid",
+        source = "google") %>%
+  ggmap()
+get_map("Chuncheon", 
+        maptype = "watercolor",
+        source = "stamen") %>%
+  ggmap()
+get_map("Chuncheon", 
+        maptype = "toner",
+        #       zoom = 12,
+        source = "stamen") %>%
+  ggmap()
+get_map("Baltimore",  ## Error
+        source = "osm") %>%
+  ggmap()
+cc.geocode <- geocode("Chuncheon")
+geocode("춘천시 근화길15번길 26")
