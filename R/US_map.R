@@ -1,5 +1,6 @@
 ## Maps
 library(tidyverse)
+library(maps)
 us_map <- map_data("state") ## ggplot2에 들어 있음.
 head(us_map)
 str(us_map)
@@ -82,14 +83,14 @@ ggplot(data = crime_map,
 ggplot(data = crimes,
        mapping = aes(map_id = state, 
                      fill = Assault)) +
-  geom_map(map = states_map,
+  geom_map(map = us_map,
            colour = "black") +
   scale_fill_gradient2(low = "#559999",
                        mid = "grey99",
                        high = "#BB650B",
                        midpoint = median(crimes$Assault)) +
-  expand_limits(x = states_map$long,
-                y = states_map$lat) +
+  expand_limits(x = us_map$long,
+                y = us_map$lat) +
   coord_map("polyconic")
 
 ## ggmap
@@ -191,7 +192,7 @@ g0 <- ggplot(baltimore,
 
 ## Chuncheon 
 
-library(OpenStreetMap)
+# library(OpenStreetMap)
 
 get_map("Chuncheon", 
         #       zoom = 12, 
@@ -225,5 +226,5 @@ get_map("Chuncheon",
 get_map("Baltimore",  ## Error
         source = "osm") %>%
   ggmap()
-cc.geocode <- geocode("Chuncheon")
+(cc.geocode <- geocode("Chuncheon"))
 geocode("춘천시 근화길15번길 26")

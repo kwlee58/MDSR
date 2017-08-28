@@ -51,7 +51,7 @@ shapefiles 는 벡터 형식의 공간자료 저장
 
 ```{r, GDAL}
 library(rgdal) 
-# download.file("http://rtwilson.com/downloads/SnowGIS_SHP.zip", "../data/SnowGIS_SHP.zip")
+download.file("http://rtwilson.com/downloads/SnowGIS_SHP.zip", "../data/SnowGIS_SHP.zip")
 dsn <- "../data/SnowGIS_SHP/" 
 list.files(dsn) ## dsn의 파일 리스트
 ogrListLayers(dsn)
