@@ -13,14 +13,16 @@ knitr::opts_chunk$set(echo = TRUE)
 `sp`는 공간 객체에 대한 `class` 정의 포함.
 
 ```{r, data}
+# install.packages("mdsr", repos = "https://cran.rstudio.com")
 library(mdsr) 
+# install.packages("sp", repos = "https://cran.rstudio.com")
 library(sp) 
 head(CholeraDeaths)
 str(CholeraDeaths)
 ```
 
 John Snow의 콜레라 데이터 지도 (사망자)(1854년, 127명 사망)
-산
+
 ```{r}
 knitr::include_graphics("../pics/Snow-cholera-map-1.jpg", dpi = 96)
 ```
@@ -47,12 +49,13 @@ shapefiles 는 벡터 형식의 공간자료 저장
 `ogrListLayers` 는 `layer` 열거용. `ogrInfo`는 특정 `layer`의 지리 정보 확인용
 `Cholera_Deaths`와 `Pumps`의 두 `layer` 확인 후 `readOGR()`로 읽어들임.
 `str`로 특정 `layer`내의 데이터 구조 확인. `str`로 data 요소의 데이터 구조 파악.
-`download.file()`의 용법 익히기. 
+`download.file()`의 용법 익히기. dsn 설정에서 "../data/SnowGIS_SHp/"로 설정하면 linux나 MacOS에서는 작동하지만 Windows에서는 "Cannot open data source" 에러가 나오게 됨. folder를 의미하는 마지막 "/" 를 쓰지 않아야 함.
 
 ```{r, GDAL}
+# install.packages("rgdal", repos = "https://cran.rstudio.com")
 library(rgdal) 
-download.file("http://rtwilson.com/downloads/SnowGIS_SHP.zip", "../data/SnowGIS_SHP.zip")
-dsn <- "../data/SnowGIS_SHP/" 
+# download.file("http://rtwilson.com/downloads/SnowGIS_SHP.zip", "../data/SnowGIS_SHP.zip")
+dsn <- "../data/SnowGIS_SHP"  
 list.files(dsn) ## dsn의 파일 리스트
 ogrListLayers(dsn)
 ogrInfo(dsn, layer = "Cholera_Deaths")
@@ -69,7 +72,9 @@ str(Pumps@data)
 
 id와 Count의 산점도에서 출발.  
 
-```{r pressure, echo=FALSE}
+```{r spplot}
+# install.packages("mapproj", repos = "https://cran.rstudio.com")
+library(mapproj)
 spplot(CholeraDeaths) 
 head(coordinates(CholeraDeaths), n = 20)
 cholera_coords <- as.data.frame(coordinates(CholeraDeaths))
@@ -80,6 +85,7 @@ cholera_coords <- as.data.frame(coordinates(CholeraDeaths))
     coord_quickmap())  ## Figure 14.2 
 (m2 <- m0 + 
     coord_map()) ## Not working
+# install.packages("ggmap", repos = "https://cran.rstudio.com")
 library(ggmap)
 m <- get_map("John Snow, London, England", 
              zoom = 17, 
@@ -99,8 +105,9 @@ attr(m, "bb") # coordinates are at different units, bounding box.
 `maps` 패키지의 `map()`함수 
 
 ```{r, maps}
+# install.packages("maps", repos = "https://cran.rstudio.com")
 library(maps)
-map("world", projection = "mercator", wrap = TRUE)
+map("world")
 map("world", projection = "cylequalarea", param = 45, wrap = TRUE)
 map("state", projection = "lambert",
     parameters = c(lat0 = 20, lat1 = 50), wrap = TRUE)

@@ -6,7 +6,7 @@ str(CholeraDeaths)
 plot(CholeraDeaths) ## mdsr 패키지에 있는 John Snow 의 콜레라 데이터 산점도 
 library(rgdal) ## rgdal 패키지 탑재. GDAL : Geospatial Data Abstraction Library
 # download.file("http://rtwilson.com/downloads/SnowGIS_SHP.zip", ".data/SnowGIS_SHP.zip")
-dsn <- "./data/SnowGIS_SHP/" ## Data Source Name, John Snow 1854, cholera outbreak killed 127.
+dsn <- "../data/SnowGIS_SHP" ## Data Source Name, John Snow 1854, cholera outbreak killed 127.
                              ## SHP : shape file 
                              ## KML : Keyhole Markup Language 
                              ## ESRI : Environmental Systems Research Institute, ArcView
@@ -45,7 +45,7 @@ head(as.data.frame(CholeraDeaths))
 str(m)
 attr(m, "bb") # coordinates are at different units, bounding box. 
 library(maps)
-map("world", projection = "mercator", wrap = TRUE)
+map("world")
 map("world", projection = "cylequalarea", param = 45, wrap = TRUE)
 map("state", projection = "lambert",
     parameters = c(lat0 = 20, lat1 = 50), wrap = TRUE)
