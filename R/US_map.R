@@ -1,13 +1,18 @@
 ## Maps
+# install.packages("tidyverse",
+#                 repos = "https://cran.rstudio.com")
 library(tidyverse)
+# install.packages("maps",
+#                 repos = "https://cran.rstudio.com")
 library(maps)
 us_map <- map_data("state") ## ggplot2에 들어 있음.
 head(us_map)
 str(us_map)
 table(us_map$region)
-g0 <- us_map %>%
+(g0 <- us_map %>%
   filter(region %in% c("north carolina", "south carolina")) %>%
-  ggplot(aes(x = long, y = lat)) 
+  ggplot(aes(x = long, y = lat)))
+g0
 (g1 <- g0 +
   geom_point())
 # g1
@@ -18,15 +23,24 @@ g0 <- us_map %>%
     geom_polygon())
 # g3
 (g4 <- g0 +
-  geom_path(aes(x = long, y = lat, group = group)))
+  geom_path(aes(x = long, 
+                y = lat, 
+                group = group)))
 # g4
 (g5 <- g0 +
-    geom_polygon(aes(x = long, y = lat, group = group), 
-                 fill = "white", colour = "black"))
+    geom_polygon(aes(x = long, 
+                     y = lat, 
+                     group = group), 
+                 fill = "white", 
+                 colour = "black"))
 g5 + theme_void()
 us_map %>%
-  ggplot(aes(x = long, y = lat, group = group)) +
-  geom_polygon(fill = "grey", colour = "black") +
+  ggplot(aes(x = long, 
+             y = lat, 
+             group = group)) +
+  geom_polygon(fill = "grey", 
+               colour = "black") +
+  coord_map("mercator") +
   theme_void()
 library(viridis)
 head(votes.repub)
@@ -34,7 +48,8 @@ votes.df <- votes.repub %>%
   as_tibble() %>%
   mutate(state = rownames(votes.repub),
          state = tolower(state)) %>%
-  right_join(us_map, by = c("state" = "region")) 
+  right_join(us_map, 
+             by = c("state" = "region")) 
 ggplot(data = votes.df, 
        aes(x = long, 
            y = lat, 
@@ -42,7 +57,8 @@ ggplot(data = votes.df,
            fill = `1976`)) + # `1976`은 tbl 숫자 변수명 표시 방법
   geom_polygon(colour = "black") +
   theme_void() +
-    scale_fill_viridis(name = "Republican\nvotes (%)")
+    scale_fill_viridis(name = "Republican\nvotes (%)") +
+  coord_map("mercator")
 
 ## USArrests
 
