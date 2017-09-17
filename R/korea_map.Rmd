@@ -82,9 +82,12 @@ korea_provin84@data
 library(tmap)
 qtm(shp = korea_provin84)
 pop_korea <- readRDS("./pop.RDs")
-korea_provin84@data <- left_join(korea_provin84@data, pop_korea, by = c("CTP_KOR_NM" = "Province"))
+Population <- pop_korea$Population
+korea_provin84$Population <- Population
 korea_provin84@data
-korea_provin84$Population
+# korea_provin84@data <- left_join(korea_provin84@data, pop_korea, by = c("CTP_KOR_NM" = "Province"))
+# korea_provin84@data
+# korea_provin84$Population
 library(extrafont)
 par(family = "HCR Dotum LVT")
 qtm(korea_provin84, fill = "Population", text = "CTP_ENG_NM")
