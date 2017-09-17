@@ -43,7 +43,7 @@ ogrInfo(dsn, layer = "TL_SCCO_CTPRVN")
 korea_provin <- readOGR(dsn, 
                      layer = "TL_SCCO_CTPRVN", 
                      stringsAsFactors = FALSE, 
-                     encoding = "CP949")
+                     encoding = "UTF-8")
 
 #< `korea_provin`의 `data` 슬롯에서 순서대로 6개 추출
 head(korea_provin@data)
@@ -88,9 +88,9 @@ korea_provin84@data
 # korea_provin84@data <- left_join(korea_provin84@data, pop_korea, by = c("CTP_KOR_NM" = "Province"))
 # korea_provin84@data
 # korea_provin84$Population
-library(extrafont)
-par(family = "HCR Dotum LVT")
-qtm(korea_provin84, fill = "Population", text = "CTP_ENG_NM")
+# library(extrafont)
+# par(family = "HCR Dotum LVT")
+qtm(korea_provin84, fill = "Population", text = "CTP_KOR_NM")
 ```
 
 ```{r ggmap way, eval = FALSE}
