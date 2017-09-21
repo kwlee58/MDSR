@@ -89,9 +89,9 @@ korea_provin84@data
 # korea_provin84@data <- left_join(korea_provin84@data, pop_korea, by = c("CTP_KOR_NM" = "Province"))
 # korea_provin84@data
 # korea_provin84$Population
-library(extrafont)
-par(family = "HCR Dotum LVT")
-qtm(korea_provin84, fill = "Population", text = "CTP_ENG_NM")
+# library(extrafont)
+# par(family = "HCR Dotum LVT")
+qtm(korea_provin84, fill = "Population", text = "CTP_KOR_NM")
 ```
 
 ```{r ggmap way, eval = FALSE}
