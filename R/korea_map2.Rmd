@@ -100,7 +100,7 @@ ggplot(data = map_df,
        mapping = aes(x = long,
                      y = lat,
                      group = group,
-                     fill = name_kor)) +
+                     fill = code)) +
   geom_polygon() +
 #  geom_polygon(fill = "white",
 #               colour = "black") +
