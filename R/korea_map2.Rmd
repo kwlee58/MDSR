@@ -17,13 +17,17 @@ library(maptools)
 library(ggplot2)
 library(rgdal)
 library(dplyr)
+library(broom)
 getwd()
 dsn <- "../data/CTPRVN_201703"
 shp1 <- readOGR(dsn, 
                 layer = "TL_SCCO_CTPRVN",
                 stringsAsFactors = FALSE,
                 encoding = "CP949")
-map1 <- fortify(shp1)
+# map1 <- fortify(shp1)
+map1 <- tidy(shp1)
+shp1@data
+shp1$AB_name <- c("서울", "부산", "대구", "인천", "광주", "대전", "율산", "세종", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주")
 shp1@data
 str(map1)
 dsn2 <- "../data/SIG_201703"
@@ -70,11 +74,12 @@ ggplot(data = map1,
 ## Simplified
 
 ```{r}
-shp_simp <- readOGR(dsn = "../data/TL_SCCO_CTPRVN", layer = "TL_SCCO_CTPRVN")
+shp_simp <- readOGR(dsn = "../data/TL_SCCO_CTPRVNv2", 
+                    layer = "TL_SCCO_CTPRVN")
 shp_simp@data
 shp_simp@data <- shp1@data
 shp_simp@data
-names(shp_simp@data) <- c("code", "name_eng", "name_kor")
+names(shp_simp@data) <- c("code", "name_eng", "name_kor", "AB_name")
 shp_simp@data
 map_simp <- fortify(shp_simp)
 str(map_simp)
@@ -84,6 +89,9 @@ map.merged <- merge(map_simp, shp_simp@data, by = "id")
 map.merged$region <- map.merged$code
 str(map.merged)
 map_df <- left_join(map_simp, shp_simp@data, c("id" = "id"))
+map_df$name_kor_f <- factor(map_df$name_kor, 
+                            levels = shp_simp$name_kor, 
+                            labels = shp_simp$AB_name)
 str(map_df)
 ```
 
@@ -100,7 +108,7 @@ ggplot(data = map_df,
        mapping = aes(x = long,
                      y = lat,
                      group = group,
-                     fill = code)) +
+                     fill = name_kor_f)) +
   geom_polygon() +
 #  geom_polygon(fill = "white",
 #               colour = "black") +
