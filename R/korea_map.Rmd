@@ -1,5 +1,5 @@
 ---
-title: "Untitled2"
+title: "Korea Map"
 author: "coop711"
 date: '2017 9 14 '
 output: html_document
@@ -28,6 +28,7 @@ library(rgdal)
 #              destfile = "./data/CTPRVN_201703.zip")
 
 #< data source name 설정
+# getwd()
 dsn <- "../data/CTPRVN_201703"
 
 #< dsn 에 들어있는 파일 리스트
@@ -41,9 +42,9 @@ ogrInfo(dsn, layer = "TL_SCCO_CTPRVN")
 
 #< 한글문제와 자동 `factor` 변환문제로 인하여 두 가지 옵션 설정.
 korea_provin <- readOGR(dsn, 
-                     layer = "TL_SCCO_CTPRVN", 
-                     stringsAsFactors = FALSE, 
-                     encoding = "UTF-8")
+                        layer = "TL_SCCO_CTPRVN", 
+                        stringsAsFactors = FALSE, 
+                        encoding = "CP949")
 
 #< `korea_provin`의 `data` 슬롯에서 순서대로 6개 추출
 head(korea_provin@data)
