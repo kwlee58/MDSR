@@ -74,7 +74,7 @@ ggplot(data = map1,
 ## Simplified
 
 ```{r}
-shp_simp <- readOGR(dsn = "../data/TL_SCCO_CTPRVNv2", 
+shp_simp <- readOGR(dsn = "../data/TL_SCCO_CTPRVN", 
                     layer = "TL_SCCO_CTPRVN")
 shp_simp@data
 shp_simp@data <- shp1@data
