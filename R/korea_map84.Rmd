@@ -102,26 +102,31 @@ coordinates(shp_simp84) #> 통상의 좌표계로 변환된 것을 확인함.
 names(shp_simp84@data) <- c("code", "name_eng", "name_kor", "AB_name") #> 변수명 바꿈.
 str(shp_simp84@data) #> 변수명 등 확인.
 # geocode(shp_simp$name_eng) 
-map_simp <- tidy(shp_simp84) #> `tidy` 데이터로 변환
-str(map_simp) #> 데이터 구조 확인
-shp_simp84$id <- rownames(shp_simp84@data) #> `id` 변수 생성
+# map_simp <- tidy(shp_simp84) #> `tidy` 데이터로 변환
+# str(map_simp) #> 데이터 구조 확인
+shp_simp84$id <- rownames(shp_simp84@data) #> `id` 변수 생성. `left_join()`에 반드시 필요함. `tidy()`의 결과로 나오는 데이터 프레임에는 `@data`의 `code`, `region`의 정보가 누락됨.
 shp_simp84@data #> 데이터 슬롯 확인
-map_merged <- merge(map_simp, shp_simp84@data, by = "id") #> shp_simp의 데이터 슬롯을 `map_simp` 에 통합.
-str(map_merged) #> 데이터 구조 확인. `region` 없는 것 확인
-map_merged$region <- map_merged$code #> region 변수 생성
-str(map_merged) #> `region` 생성 확인.
-map_coords <- coordinates(shp_simp84) #> 필요한 좌표 복사
+map_coords <- coordinates(shp_simp84) #> `geom_text()`에 필요한 좌표 복사
 colnames(map_coords) <- c("long", "lat") #> 좌표계 이름 명칭.
 map_coords # 좌표 확인
 map_data <- cbind(map_coords, shp_simp84@data) # shp_simp@data 에 좌표 추가
-map_data
-map_df <- left_join(map_simp, shp_simp84@data, c("id" = "id")) #> `map_simp` 에 `shp_sim@data` 추가
-str(map_df)
+# map_data
+# map_df <- left_join(map_simp, shp_simp84@data, c("id" = "id")) #> `map_simp` 에 `shp_sim@data` 추가
+# str(map_df)
 shp_simp84$name_kor
 shp_simp84$AB_name
-map_df$name_kor_f <- factor(map_df$name_kor, 
-                            levels = shp_simp84$name_kor, 
-                            labels = shp_simp84$AB_name)
+shp_simp84$name_kor_f <- factor(shp_simp84$name_kor,
+                                levels = shp_simp84$name_kor, 
+                                labels = shp_simp84$AB_name)
+shp_simp84$region <- shp_simp84$code
+shp_simp84_df <- tidy(shp_simp84)
+# map_df$name_kor_f <- factor(map_df$name_kor, 
+#                             levels = shp_simp84$name_kor, 
+#                             labels = shp_simp84$AB_name)
+# str(map_df)
+str(shp_simp84_df)
+str(shp_simp84@data)
+map_df <- left_join(shp_simp84_df, shp_simp84@data, by = c("id" = "id"))
 str(map_df)
 Dokdo_coord <- geocode("Dokdo")
 Ulleung_coord <- geocode("Ulleungdo")
@@ -130,7 +135,54 @@ Ulleung_coord <- geocode("Ulleungdo")
 ### 시도 이름 삽입
 
 ```{r, eval = TRUE}
-ggplot(data = map_df,  #> map_simp 로 돌리면 "discrete value supplied to continuous scale" 에러가 발생하는 데 inline 코드로 실행시키면 문제 없이 실행됨.
+library(tmap)
+qtm(shp_simp84, fill = "name_kor_f", fill.title = "시도 구분") +
+  tm_layout(fontfamily = "HCR Dotum LVT")
+```
+
+```{r}
+qtm(shp_simp84, text = "name_kor_f", text.size = 1) +
+  tm_layout(fontfamily = "HCR Dotum LVT")
+```
+
+```{r, eval = TRUE}
+#> "discrete value supplied to continuous scale" 에러 발생하는 데 inline 코드로 실행시키면 문제 없이 실행됨.
+ggplot(data = map_df,  
+       mapping = aes(x = long,
+                     y = lat,
+                     group = group)) +
+  geom_polygon(fill = "white",
+               colour = "black") +
+  coord_map() +
+  geom_text(data = map_data, 
+            mapping = aes(x = long, 
+                          y = lat,
+                          label = AB_name),
+            inherit.aes = FALSE,
+            family = "HCR Dotum LVT",
+            size = 4,
+            colour = "blue") +
+  theme(axis.title.x = element_text(family = "HCR Dotum LVT"),
+        axis.title.y = element_text(family = "HCR Dotum LVT"),
+        text = element_text(family = "HCR Dotum LVT")) +
+  labs(x = "경도", 
+       y = "위도") +
+  annotate("text", 
+           x = Dokdo_coord$lon, 
+           y = Dokdo_coord$lat, 
+           label = "독도",
+           family = "HCR Dotum LVT",
+           colour = "red") +
+  annotate("text", 
+           x = Ulleung_coord$lon, 
+           y = Ulleung_coord$lat + 0.2, 
+           label = "울릉도",
+           family = "HCR Dotum LVT",
+           colour = "black")
+```
+
+```{r, eval = TRUE}
+ggplot(data = shp_simp84_df,  #> map_simp 로 돌리면 "discrete value supplied to continuous scale" 에러가 발생하는 데 inline 코드로 실행시키면 문제 없이 실행됨.
        mapping = aes(x = long,
                      y = lat,
                      group = group)) +
@@ -181,8 +233,8 @@ ggplot(data = map_df,
   theme(legend.text = element_text(family = "HCR Dotum LVT"),
         legend.title = element_text(family = "HCR Dotum LVT")) +
   guides(fill = guide_legend(title = "시도")) +
+#   scale_fill_brewer()
   scale_fill_manual(values = fill.pal)
-#  scale_fill_manual(values = fill.pal)
 ```
 
 ## Save
