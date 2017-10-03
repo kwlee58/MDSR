@@ -41,6 +41,7 @@ shp3 <- readOGR(dsn3,
                 encoding = "CP949")
 # map3 <- fortify(shp3)
 map3 <- tidy(shp3)
+str(map3)
 nrow(map3)
 dsn4 <- "../data/LI_201703"
 shp4 <- readOGR(dsn4, 

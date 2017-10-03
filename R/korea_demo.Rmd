@@ -262,6 +262,27 @@ table(map_df$code)
 str(map_df)
 ```
 
+### `map@data` 와 인구 데이터 통합 방식 
+
+(code 불일치 문제부터 해결해야 함)
+
+```{r}
+library(tmap)
+shp1_demo <- shp_simp84
+str(shp1_demo@data)
+str(data_sido)
+shp1_demo$code_bak <- shp1_demo$code
+shp1_demo$code <- factor(shp1_demo$code, 
+                         labels = levels(data_sido$code))
+str(shp1_demo@data)
+shp1_demo@data <- left_join(shp1_demo@data, data_sido, by = c("code" = "code"))
+qtm(shp1_demo)
+tm_shape(shp1_demo) +
+tm_fill("총인구_명", thres.poly = 0) +
+tm_facets("name_kor", free.coords = TRUE, drop.units = TRUE) +
+tm_layout(legend.show = FALSE, title.position = c("center", "center"), title.size = 2, fontfamily = "HCR Dotum LVT")
+```
+
 ```{r, choroplethmap}
 library(viridis)
 library(RColorBrewer)
