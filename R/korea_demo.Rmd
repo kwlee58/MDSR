@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, kosis data}
 options(width = 180)
 library(tidyverse)
+library(extrafont) #> "Malgun Gothic" 사용하기 위한 조치
 census_data <- read.csv("../data/101_DT_1IN1502_Y_2015.csv",
                         header = TRUE, #> 한글 변수명 그대로 읽어들일 예정
                         na.strings = "X",  #> 통계청 데이터에서 NA는 "X"로 표시되어 있음.
@@ -280,7 +281,10 @@ qtm(shp1_demo)
 tm_shape(shp1_demo) +
 tm_fill("총인구_명", thres.poly = 0) +
 tm_facets("name_kor", free.coords = TRUE, drop.units = TRUE) +
-tm_layout(legend.show = FALSE, title.position = c("center", "center"), title.size = 2, fontfamily = "HCR Dotum LVT")
+tm_layout(legend.show = FALSE, 
+          title.position = c("center", "center"), 
+          title.size = 2, 
+          fontfamily = "Malgun Gothic")
 ```
 
 ```{r, choroplethmap}
@@ -293,11 +297,14 @@ ggplot(data = data_sido,
   geom_map(map = map_df) +
   expand_limits(x = map_df$long, 
                 y = map_df$lat) +
-  theme(plot.title = element_text(family = "HCR Dotum LVT"),
-        legend.title = element_text(family = "HCR Dotum LVT")) +
+  theme(plot.title = element_text(family = "Malgun Gothic"),
+        legend.title = element_text(family = "Malgun Gothic")) +
   ggtitle("시도 인구 단계구분도") + 
 #  scale_fill_gradientn(name = "인구(명)", colours = c("white", "orange", "red")) +
-  scale_fill_viridis(name = "인구(명)", begin = 0.5, option = "C", direction = -1) +
+  scale_fill_viridis(name = "인구(명)",
+                     begin = 0.5, 
+                     option = "C", 
+                     direction = -1) +
 #  scale_fill_distiller(name = "인구(명)", palette = "OrRd", trans = "reverse") +
   coord_map()
 ```
