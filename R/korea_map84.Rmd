@@ -19,11 +19,19 @@ library(rgdal) #> `CRS`, `ogrInfo()`, `ogrListLayers()`, `readOGR()`, `spTransfo
 library(dplyr) #> `arrange()`, `filter()`, `group_by()`, `left_join()`, `mutate()`,  
 library(broom) #> `tidy()`
 # getwd()
-dsn <- "../data/CTPRVN_201703"   #> 시도 단위 지도 파일 
+#> Data source Name
+dsn <- "../data/CTPRVN_201703"   
+#> 시도 단위 지도 파일 읽어들이기. OGR : OpenGis simple features Reference implementation
+#> `stringsAsFactors = FALSE`를 설정하지 않으면 시도 이름이 `factor`로 자동 변환되면서 가나다 순으로 수준(`level`)이 매겨짐에 따라 `강원도, 경기도, ..., ` 순이 됨.
+#> `encoding = "CP949"`는 한글 인코딩 작업이 윈도우 시스템에서 이루어졌기 때문에 취해진 조치임. 윈도우에서 읽어들일 때는 `""`로 변경하거나 설정하지 않아도 됨.
 shp1 <- readOGR(dsn, 
                 layer = "TL_SCCO_CTPRVN",
                 stringsAsFactors = FALSE,
                 encoding = "CP949")
+#> 아래와 같이 `dsn`과 `layer`를 통합하여 읽어들일 수도 있으나 이때는 `.shp`를 붙여주어야 함.
+# shp1 <- readOGR("../data/CTPRVN_201703/TL_SCCO_CTPRVN.shp",
+#                 stringsAsFactors = FALSE,
+#                 encoding = "CP949")
 # map1 <- fortify(shp1)
 dsn2 <- "../data/SIG_201703"
 shp2 <- readOGR(dsn2, 
@@ -79,7 +87,7 @@ ggplot(data = map1,  #> `ggplot()`을 이용하여 지도를 그리는 전형적
   coord_map() 
 ```
 
-## Simplified Versions (from [mapshper](https://mapshaper.org))
+## Simplified Versions (from [mapshaper](https://mapshaper.org))
 
 ### 시도
 
@@ -146,7 +154,7 @@ qtm(shp_simp84, text = "name_kor_f", text.size = 1) +
 ```
 
 ```{r, eval = TRUE}
-#> "discrete value supplied to continuous scale" 에러 발생하는 데 inline 코드로 실행시키면 문제 없이 실행됨.
+#> "discrete value supplied to continuous scale" 에러가 발생하면, rstudio 버전을 체크해 볼 것. 특히 inline 코드로 는 에러가 발생하지 않는다면 rstudio 버전 문제일 가능성이 큼.
 ggplot(data = map_df,  
        mapping = aes(x = long,
                      y = lat,
@@ -182,7 +190,8 @@ ggplot(data = map_df,
 ```
 
 ```{r, eval = TRUE}
-ggplot(data = shp_simp84_df,  #> map_simp 로 돌리면 "discrete value supplied to continuous scale" 에러가 발생하는 데 inline 코드로 실행시키면 문제 없이 실행됨.
+#> data frame으로 변환하여 그리는 전형적인 과정
+ggplot(data = shp_simp84_df,  
        mapping = aes(x = long,
                      y = lat,
                      group = group)) +
