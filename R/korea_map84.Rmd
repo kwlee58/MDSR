@@ -18,6 +18,7 @@ library(ggplot2) #> `ggplot()`
 library(rgdal) #> `CRS`, `ogrInfo()`, `ogrListLayers()`, `readOGR()`, `spTransform()`
 library(dplyr) #> `arrange()`, `filter()`, `group_by()`, `left_join()`, `mutate()`,  
 library(broom) #> `tidy()`
+library(extrafont) #> "HCR Dotum LVT"
 # getwd()
 #> Data source Name
 dsn <- "../data/CTPRVN_201703"   
@@ -49,6 +50,7 @@ shp3 <- readOGR(dsn3,
                 encoding = "CP949")
 # map3 <- fortify(shp3)
 map3 <- tidy(shp3)
+str(map3)
 nrow(map3)
 dsn4 <- "../data/LI_201703"
 shp4 <- readOGR(dsn4, 
