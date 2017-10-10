@@ -72,6 +72,11 @@ census_data %>%  #> 읍면동 명 앞에 빈 공간 존재 확인
   .[, 2] %>%
   head(20)
 ```
+
+```{r}
+census_data[, 1:6]
+```
+
 ## 시도 데이터
 
 ```{r, filter sido}
@@ -191,6 +196,9 @@ data_sgg <- data_sigungu %>%
       `!` 
     })
 #  filter(!(substr(data_sigungu[, 1], 3, 5) %in% c("003", "004", "005")))
+# data_sgg %>%
+#   mutate(code = C행정구역별_읍면동)
+data_sgg$code <- data_sgg$C행정구역별_읍면동 #> `map_id` 설정
 data_sgg %>%
   nrow()
 # nrow(data_sgg)
@@ -202,6 +210,7 @@ data_sido %>%
   .[, 1:6]
 data_sgg %>%
   .[, 1:6]
+
 ```
 
 ### 읍면동 데이터
@@ -215,6 +224,9 @@ data_emd <- census_data %>% #> 7자리 코드를 읍면동으로 걸러냄
       `==`(7)
   })
 #    filter(nchar(C행정구역별_읍면동) == 7)
+# data_emd %>%
+#   mutate(code = C행정구역별_읍면동)
+data_emd$code <- data_emd$C행정구역별_읍면동 #> `map_id` 설정
 data_emd %>%
   .[, 1:6] %>%
   head()
